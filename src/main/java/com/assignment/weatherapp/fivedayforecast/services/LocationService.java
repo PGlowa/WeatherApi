@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -33,11 +36,9 @@ public class LocationService {
             throw new RuntimeException(e.getMessage());
         }
 
-        if(locationInfo != null && locationInfo.length > 0){
-            return locationInfo[0];
-        } else {
-            throw new RuntimeException("Location not found");
-        }
+        Optional<Location> optionalLocationInfo = Optional.ofNullable(locationInfo).flatMap(list -> Arrays.stream(list).findFirst());
+
+        return optionalLocationInfo.orElseThrow(() ->new RuntimeException("Location Not Found"));
 
 
 
